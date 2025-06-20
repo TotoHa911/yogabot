@@ -1,14 +1,13 @@
-
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 TOKEN = '7862512838:AAFTLbHVsylOGTawisvDZsvCs_6Vux5qX6E'
 
+# Главное меню кнопками
 keyboard = ReplyKeyboardMarkup(
     keyboard=[
-        ["🧾 Навигация", "📅 Расписание"],
-        ["📖 Гайд", "📬 Контакты"],
-        
+        ["📌 Навигация", "📅 Расписание"],
+        ["📖 Гайд", "📬 Контакты"]
     ],
     resize_keyboard=True
 )
@@ -28,11 +27,11 @@ def start(update: Update, context: CallbackContext):
 def navigation(update: Update, context: CallbackContext):
     text = (
         "внутри группы 🧭\n\n"
-        "🧘‍♀️ [асаны в деталях](https://t.me/chatdorogakyoga/177) — обсуждаем нюансы\n"
+        "🤸‍♀️ [асаны в деталях](https://t.me/chatdorogakyoga/177) — обсуждаем нюансы\n"
         "🌬 [пранаямы](https://t.me/chatdorogakyoga/185) — дыхание и концентрация\n"
         "📚 [книги](https://t.me/chatdorogakyoga/187) — вдохновение из текста\n"
         "🔮 [астрология](https://t.me/chatdorogakyoga/225) — про звёзды и предназначение\n"
-        "☕️ [о личном](https://t.me/chatdorogakyoga/191) — истории из практики\n"
+        "💌 [о личном](https://t.me/chatdorogakyoga/191) — истории из практики\n"
         "🎵 [музыка](https://t.me/chatdorogakyoga/189) — делимся треками, достойными внимания\n\n"
         "выбирай самый интересный раздел 🌿"
     )
@@ -63,41 +62,28 @@ def contacts(update: Update, context: CallbackContext):
         "Главный канал: https://t.me/Doroga_k_Yoga"
     )
 
-def unknown(update: Update, context: CallbackContext):
-    text = update.message.text.lower()
-    if "навигация" in text:
+# Обработка сообщений от кнопок
+def button_handler(update: Update, context: CallbackContext):
+    text = update.message.text
+    if "Навигация" in text:
         navigation(update, context)
-    elif "расписание" in text:
+    elif "Расписание" in text:
         schedule(update, context)
-    elif "гайд" in text:
+    elif "Гайд" in text:
         guide(update, context)
-    elif "контакт" in text:
+    elif "Контакт" in text:
         contacts(update, context)
-    elif "асан" in text:
-        update.message.reply_text("🤸‍♀️ Асаны: https://t.me/chatdorogakyoga/177")
-    elif "пранаям" in text:
-        update.message.reply_text("🌬 Пранаямы: https://t.me/chatdorogakyoga/185")
-    elif "книг" in text:
-        update.message.reply_text("📚 Книги: https://t.me/chatdorogakyoga/187")
-    elif "медитац" in text:
-        update.message.reply_text("🎧 Медитации: https://t.me/chatdorogakyoga/183")
-    elif "астрол" in text:
-        update.message.reply_text("🔮 Астрология: https://t.me/chatdorogakyoga/225")
-    elif "личн" in text:
-        update.message.reply_text("💌 О личном: https://t.me/chatdorogakyoga/191")
-    elif "музык" in text:
-        update.message.reply_text("🎵 Музыка: https://t.me/chatdorogakyoga/189")
     else:
-        update.message.reply_text("🌿 Я тебя понял, но пока не знаю, как ответить. Попробуй нажать кнопку ниже.")
+        update.message.reply_text("🌿 Нажми кнопку в меню ниже, чтобы продолжить.")
 
 def main():
     updater = Updater(TOKEN, use_context=True)
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, unknown))
+    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, button_handler))
 
-    print("Бот запущен с кнопками!")
+    print("Бот запущен!")
     updater.start_polling()
     updater.idle()
 
