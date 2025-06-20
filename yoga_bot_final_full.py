@@ -1,81 +1,103 @@
 
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, CallbackContext
+from telegram import Update, ReplyKeyboardMarkup
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 TOKEN = '7862512838:AAFTLbHVsylOGTawisvDZsvCs_6Vux5qX6E'
+
+keyboard = ReplyKeyboardMarkup(
+    keyboard=[
+        ["🧾 Навигация", "📅 Расписание"],
+        ["📖 Гайд", "📬 Контакты"],
+        
+    ],
+    resize_keyboard=True
+)
 
 def start(update: Update, context: CallbackContext):
     text = (
         "добро пожаловать в наше пространство йоги и заботы 🧘‍♀️\n\n"
         "я помогу тебе сориентироваться 🌿\nвот что у нас есть:\n\n"
-        "🧾 /navigation — все полезные темы\n"
-        "📅 /schedule — где и когда практики\n"
-        "📖 /guide — забирай бесплатный PDF “залог удачного дня”\n"
-        "📬 /contacts — если есть вопрос\n\n"
+        "🧾 Навигация — все полезные темы\n"
+        "📅 Расписание — где и когда практики\n"
+        "📖 Гайд — забирай бесплатный PDF “залог удачного дня”\n"
+        "📬 Контакты — если есть вопрос\n\n"
         "если просто хочется почитать интересное, поболтать — заходи в чат 🤍 [основной чат](https://t.me/chatdorogakyoga/175)"
     )
-    keyboard = [
-        [InlineKeyboardButton("📌 Навигация", callback_data='navigation'), InlineKeyboardButton("📅 Расписание", callback_data='schedule')],
-        [InlineKeyboardButton("📖 Гайд", callback_data='guide'), InlineKeyboardButton("📬 Контакты", callback_data='contacts')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text(text, parse_mode='Markdown', reply_markup=reply_markup)
+    update.message.reply_text(text, parse_mode='Markdown', reply_markup=keyboard)
 
 def navigation(update: Update, context: CallbackContext):
     text = (
         "внутри группы 🧭\n\n"
-        "🧘‍♀️ /asanas — обсуждаем нюансы\n"
-        "🌬 /pranayamas — дыхание и концентрация\n"
-        "📚 /books — вдохновение из текста\n"
-        "🔮 /astrology — про звёзды и предназначение\n"
-        "☕️ /personal — истории из практики\n"
-        "🎵 /music — делимся треками, достойными внимания\n\n"
+        "🧘‍♀️ [асаны в деталях](https://t.me/chatdorogakyoga/177) — обсуждаем нюансы\n"
+        "🌬 [пранаямы](https://t.me/chatdorogakyoga/185) — дыхание и концентрация\n"
+        "📚 [книги](https://t.me/chatdorogakyoga/187) — вдохновение из текста\n"
+        "🔮 [астрология](https://t.me/chatdorogakyoga/225) — про звёзды и предназначение\n"
+        "☕️ [о личном](https://t.me/chatdorogakyoga/191) — истории из практики\n"
+        "🎵 [музыка](https://t.me/chatdorogakyoga/189) — делимся треками, достойными внимания\n\n"
         "выбирай самый интересный раздел 🌿"
     )
-    update.callback_query.answer()
-    update.callback_query.edit_message_text(text, parse_mode='Markdown')
+    update.message.reply_text(text, parse_mode='Markdown')
 
 def schedule(update: Update, context: CallbackContext):
-    text = (
+    update.message.reply_text(
         "расписание практик 🧘‍♀️\n\n"
         "обновляется каждую неделю и всегда есть в закреплённом сообщении в канале.\n\n"
         "⚡️ следующая живая практика в воскресенье, в 10:00\n"
         "☁️ йога онлайн по запросу (напиши Кате)\n\n"
-        "[Посмотреть расписание](https://t.me/chatdorogakyoga/176)"
+        "[Посмотреть расписание](https://t.me/chatdorogakyoga/176)",
+        parse_mode='Markdown'
     )
-    update.callback_query.answer()
-    update.callback_query.edit_message_text(text, parse_mode='Markdown')
 
 def guide(update: Update, context: CallbackContext):
-    text = (
+    update.message.reply_text(
         "📖 Забирай PDF-гайд «Залог удачного дня» — утренний комплекс, с которого приятно начать день ☀️\n\n"
-        "[Скачать гайд](https://t.me/Doroga_k_Yoga/23)"
+        "[Скачать гайд](https://t.me/Doroga_k_Yoga/23)",
+        parse_mode='Markdown'
     )
-    update.callback_query.answer()
-    update.callback_query.edit_message_text(text, parse_mode='Markdown')
 
 def contacts(update: Update, context: CallbackContext):
-    text = (
+    update.message.reply_text(
         "📬 Контакты:\n\n"
         "Преподаватель: Екатерина Багина — @katekateri_na\n"
         "Администратор: Антон Наумов — @ANT0N_NAUM0V\n"
         "Главный канал: https://t.me/Doroga_k_Yoga"
     )
-    update.callback_query.answer()
-    update.callback_query.edit_message_text(text)
+
+def unknown(update: Update, context: CallbackContext):
+    text = update.message.text.lower()
+    if "навигация" in text:
+        navigation(update, context)
+    elif "расписание" in text:
+        schedule(update, context)
+    elif "гайд" in text:
+        guide(update, context)
+    elif "контакт" in text:
+        contacts(update, context)
+    elif "асан" in text:
+        update.message.reply_text("🤸‍♀️ Асаны: https://t.me/chatdorogakyoga/177")
+    elif "пранаям" in text:
+        update.message.reply_text("🌬 Пранаямы: https://t.me/chatdorogakyoga/185")
+    elif "книг" in text:
+        update.message.reply_text("📚 Книги: https://t.me/chatdorogakyoga/187")
+    elif "медитац" in text:
+        update.message.reply_text("🎧 Медитации: https://t.me/chatdorogakyoga/183")
+    elif "астрол" in text:
+        update.message.reply_text("🔮 Астрология: https://t.me/chatdorogakyoga/225")
+    elif "личн" in text:
+        update.message.reply_text("💌 О личном: https://t.me/chatdorogakyoga/191")
+    elif "музык" in text:
+        update.message.reply_text("🎵 Музыка: https://t.me/chatdorogakyoga/189")
+    else:
+        update.message.reply_text("🌿 Я тебя понял, но пока не знаю, как ответить. Попробуй нажать кнопку ниже.")
 
 def main():
     updater = Updater(TOKEN, use_context=True)
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler("start", start))
-    from telegram.ext import CallbackQueryHandler
-    dp.add_handler(CallbackQueryHandler(navigation, pattern='^navigation$'))
-    dp.add_handler(CallbackQueryHandler(schedule, pattern='^schedule$'))
-    dp.add_handler(CallbackQueryHandler(guide, pattern='^guide$'))
-    dp.add_handler(CallbackQueryHandler(contacts, pattern='^contacts$'))
+    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, unknown))
 
-    print("Бот запущен!")
+    print("Бот запущен с кнопками!")
     updater.start_polling()
     updater.idle()
 
