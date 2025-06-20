@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: yogabot
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python yoga_bot_final_full.py"
+    pythonVersion: 3.11
