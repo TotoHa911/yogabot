@@ -12,7 +12,7 @@ keyboard = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
- def start(update: Update, context: CallbackContext):
+def start(update: Update, context: CallbackContext):
     user = update.effective_user
     args = context.args
 
@@ -26,6 +26,13 @@ keyboard = ReplyKeyboardMarkup(
             "📖 Гайд — PDF “залог удачного дня”\n"
             "📬 Контакты — если есть вопрос\n\n"
             "если просто хочется почитать интересное, поболтать — заходи в чат 🤍 [основной чат](https://t.me/chatdorogakyoga/175)"
+        )
+        update.message.reply_text(text, parse_mode='Markdown', reply_markup=keyboard)
+    else:
+        # обычный запуск бота
+        update.message.reply_text(
+            "нажми кнопку ниже, чтобы открыть меню 🌿",
+            reply_markup=keyboard
         )
         update.message.reply_text(text, parse_mode='Markdown', reply_markup=keyboard)
     else:
