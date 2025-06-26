@@ -33,13 +33,7 @@ def start(update: Update, context: CallbackContext):
         update.message.reply_text(
             "нажми кнопку ниже, чтобы открыть меню 🌿",
             reply_markup=keyboard
-        )
-        update.message.reply_text(text, parse_mode='Markdown', reply_markup=keyboard)
-    else:
-        # обычный запуск бота
-        update.message.reply_text(
-            "нажми кнопку ниже, чтобы открыть меню 🌿",
-            reply_markup=keyboard
+   
     )
     update.message.reply_text(text, parse_mode='Markdown', reply_markup=keyboard)
 
